@@ -30,6 +30,10 @@ module Causality
         @status != :down
       end
 
+      def seconds_down
+        status == :down ? ( Time.now - down_since ).to_i : 0
+      end
+
       def connect
         raise "I'm part of an abstract class. Override me!"
       end

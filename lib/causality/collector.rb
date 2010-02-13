@@ -11,7 +11,7 @@ module Causality
     #FIXME: make queue name configurable
     def push( event )
       begin
-        if ( Time.now - @queue.down_since.to_i ).to_i >= RETRY_CONNECT_INTERVAL 
+        if @queue.up? || @queue.seconds_down >= RETRY_CONNECT_INTERVAL 
           @queue.set :causality_events, event
         end
       rescue

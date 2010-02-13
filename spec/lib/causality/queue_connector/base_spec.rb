@@ -143,4 +143,18 @@ describe Causality::QueueConnector::Base do
       @instance.should be_true
     end
   end
+
+  describe "#seconds_down" do
+    it "should return the number of seconds since down_since if a time is stored" do
+      @now = Time.now
+      @instance.mark_down
+      @instance.stub!( :down_since ).and_return( @now - 30 )
+      @instance.seconds_down.should == 30
+    end
+
+    it "should return 0 if queue is not down" do
+      @instance.mark_up
+      @instance.seconds_down.should == 0
+    end
+  end
 end

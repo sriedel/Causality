@@ -69,13 +69,13 @@ describe Causality::Collector do
 
     context "the queue is down" do
       before( :each ) do
-        @instance.instance_eval { @queue_status = :down }
+        @instance.queue.mark_down
       end
 
       context "the queue is down for more than RETRY_CONNECT_INTERVAL seconds" do
         before( :each ) do
-          down_since = @now - ( Causality::Collector::RETRY_CONNECT_INTERVAL + 1 )
-          @instance.queue.stub!( :down_since ).and_return( down_since )
+          seconds = Causality::Collector::RETRY_CONNECT_INTERVAL + 1 
+          @instance.queue.stub!( :seconds_down ).and_return( seconds )
         end
 
         it "should try to store things again in the queue" do
@@ -95,8 +95,8 @@ describe Causality::Collector do
 
       context "the queue has been down for less than RETRY_CONNECT_INTERVAL seconds" do
         before( :each ) do
-          down_since = @now - ( Causality::Collector::RETRY_CONNECT_INTERVAL - 1 )
-          @instance.queue.stub!( :down_since ).and_return( down_since )
+          seconds = Causality::Collector::RETRY_CONNECT_INTERVAL - 1 
+          @instance.queue.stub!( :seconds_down ).and_return( seconds )
         end
 
         it "should store the event in the spool"
