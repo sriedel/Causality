@@ -13,14 +13,6 @@ describe Causality::Collector do
     @instance = Causality::Collector.new
   end
 
-  it "should have a queue status attribute" do
-    @instance.should respond_to( :queue_status )
-  end
-
-  it "should have a queue down timestamp attribute" do
-    @instance.should respond_to( :queue_down_since )
-  end
-
   describe "#initialize" do
     context "a config yml file is passed" do
       before( :each ) do
@@ -46,14 +38,6 @@ describe Causality::Collector do
         Causality::Collector.new
       end
     end
-
-    it "should set the queue status to 'unknown'" do
-      @instance.queue_status.should == :unknown
-    end
-
-    it "should set the queue_down_since attribute to nil" do
-      @instance.queue_down_since.should be_nil
-    end
   end
 
   describe "#push" do
@@ -67,36 +51,17 @@ describe Causality::Collector do
     context "the queue is up" do
       before( :each ) do
         @starling.stub!( :set ).and_return( true )
-        @instance.instance_eval { @queue_status = :up }
-        @instance.instance_eval { @queue_down_since = nil }
       end
 
       it "should store the passed event in the queue" do
         @starling.should_receive( :set ).with( :causality_events, @event )
         @instance.push @event
       end
-
-      it "should set the queue status to 'up'" do
-        @instance.push @event
-        @instance.queue_status.should == :up
-      end
     end
 
     context "the queue just went down" do
       before( :each ) do
         @starling.stub!( :set ).and_raise( Causality::QueueUnavailable )
-        @instance.instance_eval { @queue_status = :up }
-        @instance.instance_eval { @queue_down_since = nil }
-      end
-
-      it "should set the queue status to 'down'" do
-        @instance.push @event 
-        @instance.queue_status.should == :down
-      end
-
-      it "should set the queue_down_since attribute to the current time" do
-        @instance.push @event
-        @instance.queue_down_since.should == @now
       end
 
       it "should store the event in the spool instead"
@@ -110,7 +75,7 @@ describe Causality::Collector do
       context "the queue is down for more than RETRY_CONNECT_INTERVAL seconds" do
         before( :each ) do
           down_since = @now - ( Causality::Collector::RETRY_CONNECT_INTERVAL + 1 )
-          @instance.instance_eval { @queue_down_since = down_since }
+          @instance.queue.stub!( :down_since ).and_return( down_since )
         end
 
         it "should try to store things again in the queue" do
@@ -124,23 +89,14 @@ describe Causality::Collector do
           before( :each ) do
             @starling.stub!( :set ).and_return( true )
           end
-
-          it "should set the queue status to 'up'" do
-            @instance.push @event
-            @instance.queue_status.should == :up
-          end
-
-          it "should clear the queue_down_since attribute to nil" do
-            @instance.push @event
-            @instance.queue_down_since.should be_nil
-          end
+          #FIXME: how to check that it's passing messages to starling again?
         end
       end
 
       context "the queue has been down for less than RETRY_CONNECT_INTERVAL seconds" do
         before( :each ) do
           down_since = @now - ( Causality::Collector::RETRY_CONNECT_INTERVAL - 1 )
-          @instance.instance_eval { @queue_down_since = down_since }
+          @instance.queue.stub!( :down_since ).and_return( down_since )
         end
 
         it "should store the event in the spool"
