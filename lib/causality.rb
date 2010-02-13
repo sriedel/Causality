@@ -2,6 +2,8 @@ require 'yaml'
 
 module Causality
   DEFAULT_CONFIG_FILE = "causality.yml"
+
+  class QueueUnavailable < StandardError ; end
 end
 
 $: << File.expand_path( File.dirname( __FILE__ ) )
