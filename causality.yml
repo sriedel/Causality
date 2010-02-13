@@ -1,0 +1,3 @@
+:queue:
+  :host: "localhost"
+  :port: 22122
