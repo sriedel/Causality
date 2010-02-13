@@ -43,9 +43,6 @@ describe Causality::Collector do
   describe "#push" do
     before( :each ) do
       @event = :event
-
-      @now = Time.now
-      Time.stub!( :now ).and_return( @now )
     end
 
     context "the queue is up" do
@@ -89,6 +86,7 @@ describe Causality::Collector do
           before( :each ) do
             @starling.stub!( :set ).and_return( true )
           end
+          it "should not store the event in the queue"
           #FIXME: how to check that it's passing messages to starling again?
         end
       end
