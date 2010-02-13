@@ -18,7 +18,7 @@ module Causality
         else
           store_in_spool event
         end
-      rescue
+      rescue Causality::QueueUnavailable
         store_in_spool event
       end
     end
