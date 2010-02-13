@@ -50,4 +50,11 @@ describe Causality::SpoolConnector do
       Causality::SpoolConnector.new( @options )
     end
   end
+
+  describe "#set" do
+    it "should store the passed data in the indicated queue of the spool" do
+      @instance.spooler.should_receive( :put ).with( :queue, :value )
+      @instance.set :queue, :value
+    end
+  end
 end

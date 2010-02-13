@@ -12,5 +12,8 @@ module Causality
       @spooler = SpoolPool::Pool.new( options[:spool_path] )
     end
 
+    def set( queue, value )
+      @spooler.put queue, value
+    end
   end
 end
