@@ -1,11 +1,42 @@
-Given /^the Queue is up$/ do
-  @starling_instance = mock( Starling )
-  @starling_instance.stub!( :set ).and_return { |queue, value| @to_queue, @got_value = queue, value }
+class MockStarling
+  def up!
+    @up = true
+  end
 
-  Starling.stub!( :new ).and_return( @starling_instance )
+  def down!
+    @up = false
+  end
+
+  def initialize
+    @queues = {}
+  end
+
+  def set( queue, value )
+    raise MemCache::MemCacheError unless @up
+    @queues[queue] ||= []
+    @queues[queue] << value
+  end
+
+  def get( queue )
+    @queues[queue].shift
+  end
 end
 
+Given /^we are using a Starling queue$/ do
+  @starling = MockStarling.new
+  Starling.stub!( :new ).and_return( @starling )
+end
+
+Given /^the queue is up$/ do
+  @starling.up!
+end
+
+Given /^the queue is down$/ do
+  @starling.down!
+end
+
+
 Then /^the Event should be stored in the Queue$/ do
-  @to_queue.should == :causality_events
-  @got_value.should be_a( Causality::Event )
+  value = @starling.get :causality_events
+  value.should be_a( Causality::Event )
 end
