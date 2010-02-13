@@ -4,29 +4,11 @@ module Causality
   module QueueConnector
     class Starling < Causality::QueueConnector::Base
       def set( queue, data )
-        tries = 0
-        begin
-          connect unless @handle
-          @handle.set queue, data
-        rescue
-          raise $! if tries > 0
-
-          tries += 1
-          retry
-        end
+        try_with_reconnect { @handle.set queue, data }
       end
 
       def get( queue )
-        tries = 0
-        begin 
-          connect unless @handle
-          @handle.get queue
-        rescue
-          raise $! if tries > 0
-
-          tries += 1
-          retry
-        end
+        try_with_reconnect{ @handle.get queue }
       end
 
       def connect
@@ -39,6 +21,20 @@ module Causality
       private
       def connection_string
         [ @connection_data[:host], @connection_data[:port].to_s ].join( ":" )
+      end
+
+      def try_with_reconnect
+        tries = 0
+        begin 
+          connect unless @handle
+          yield
+
+        rescue
+          raise $! if tries > 0
+
+          tries += 1
+          retry
+        end
       end
     end
   end
