@@ -26,6 +26,10 @@ module Causality
         @status = :down
       end
 
+      def up?
+        @status != :down
+      end
+
       def connect
         raise "I'm part of an abstract class. Override me!"
       end

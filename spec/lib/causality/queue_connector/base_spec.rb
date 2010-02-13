@@ -127,4 +127,20 @@ describe Causality::QueueConnector::Base do
       @instance.status.should == :down
     end
   end
+
+  describe "#up?" do
+    it "should return false if the status is :down" do
+      @instance.mark_down
+      @instance.should_not be_up
+    end
+
+    it "should return true if the status is :up" do
+      @instance.mark_up
+      @instance.should be_up
+    end
+
+    it "should return true if the status is :unknown" do
+      @instance.should be_true
+    end
+  end
 end
