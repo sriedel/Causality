@@ -18,6 +18,14 @@ describe Causality::QueueConnector::Base do
     @instance.should respond_to( :connection_data )
   end
 
+  it "should have a status attribute" do
+    @instance.should respond_to( :status )
+  end
+
+  it "should have a down_since attribute" do
+    @instance.should respond_to( :down_since )
+  end
+
   describe ".from_yml_file" do
     before( :each ) do
       @filename = "some_file.yml"
@@ -54,6 +62,14 @@ describe Causality::QueueConnector::Base do
     it "should store the passed port" do
       @instance.connection_data[:port] = @connection_data[:port]
     end
+
+    it "should set the status attribute to :unknown" do
+      @instance.status.should == :unknown
+    end
+
+    it "should set the down_since attribute to nil" do
+      @instance.down_since.should == nil
+    end
   end
 
   describe "#connect" do
@@ -78,5 +94,37 @@ describe Causality::QueueConnector::Base do
     end
 
     it_should_behave_like "an abstract method"
+  end
+
+  describe "#mark_up" do
+    before( :each ) do
+      @instance.mark_down
+      @instance.mark_up
+    end
+
+    it "should clear the down_since attribute" do
+      @instance.down_since.should == nil
+    end
+
+    it "should set status to up" do
+      @instance.status.should == :up
+    end
+  end
+
+  describe "#mark_down" do
+    before( :each ) do
+      @now = Time.now
+      Time.stub!( :now ).and_return( @now )
+      @instance.mark_up
+      @instance.mark_down
+    end
+
+    it "should set the down_since attribute to the current time" do
+      @instance.down_since.should == @now 
+    end
+
+    it "should set the status to down" do
+      @instance.status.should == :down
+    end
   end
 end
