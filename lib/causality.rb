@@ -1,4 +1,7 @@
+require 'yaml'
+
 module Causality
+  DEFAULT_CONFIG_FILE = "causality.yml"
 end
 
 $: << File.expand_path( File.dirname( __FILE__ ) )
