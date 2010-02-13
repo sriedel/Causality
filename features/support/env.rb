@@ -1,5 +1,6 @@
 require 'spec/stubs/cucumber'
 require 'starling'
+require 'spool_pool'
 
 require 'lib/causality'
 

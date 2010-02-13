@@ -4,7 +4,7 @@ module Causality
   module QueueConnector
     class Starling < Causality::QueueConnector::Base
       def set( queue, data )
-        try_with_reconnect { @handle.set queue, data }
+        try_with_reconnect { @handle.set( queue, data ) }
       end
 
       def get( queue )
@@ -30,10 +30,10 @@ module Causality
           connect unless @handle
           value = yield
 
-        rescue
+        rescue MemCache::MemCacheError
           if tries > 0
             mark_down
-            raise $!
+            raise Causality::QueueUnavailable
           end
 
           tries += 1

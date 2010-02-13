@@ -1,3 +1,5 @@
 :queue:
   :host: "localhost"
   :port: 22122
+:spool:
+  :spool_path: "test_spool"

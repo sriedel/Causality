@@ -1,4 +1,6 @@
 class MockStarling
+  attr_reader :up
+
   def up!
     @up = true
   end
@@ -12,12 +14,13 @@ class MockStarling
   end
 
   def set( queue, value )
-    raise MemCache::MemCacheError unless @up
+    raise Causality::QueueUnavailable unless @up
     @queues[queue] ||= []
     @queues[queue] << value
   end
 
   def get( queue )
+    @queues[queue] ||= []
     @queues[queue].shift
   end
 end
@@ -27,11 +30,11 @@ Given /^we are using a Starling queue$/ do
   Starling.stub!( :new ).and_return( @starling )
 end
 
-Given /^the queue is up$/ do
+Given /^the Starling server is up$/ do
   @starling.up!
 end
 
-Given /^the queue is down$/ do
+Given /^the Starling server is down$/ do
   @starling.down!
 end
 
