@@ -14,12 +14,12 @@ module Causality
     def push( event )
       begin
         if @queue.up? || @queue.seconds_down >= RETRY_CONNECT_INTERVAL 
-          @queue.set :causality_events, event
+          store_in_queue event
         else
-          @spool.set :causality_events, event
+          store_in_spool event
         end
       rescue
-        @spool.set :causality_events, event
+        store_in_spool event
       end
     end
 
