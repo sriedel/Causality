@@ -5,6 +5,13 @@ Should be able to generate events and have them forwarded to an intermediate spo
 To enable the further passing of the event downstream.
 
 Scenario: An Event is generated while the queue is up
-Given the Queue is up
+Given we are using a Starling queue
+And the queue is up
 When I send an Event to the Collector
 Then the Event should be stored in the Queue
+
+Scenario: An Event is generated while the queue is down
+Given we are using a Starling queue
+And the queue is down
+When I send an Event to the Collector
+Then the Event should be stored in the Spool
