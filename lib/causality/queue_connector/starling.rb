@@ -25,16 +25,23 @@ module Causality
 
       def try_with_reconnect
         tries = 0
+        value = nil
         begin 
           connect unless @handle
-          yield
+          value = yield
 
         rescue
-          raise $! if tries > 0
+          if tries > 0
+            mark_down
+            raise $!
+          end
 
           tries += 1
           retry
+        else
+          mark_up
         end
+        value
       end
     end
   end

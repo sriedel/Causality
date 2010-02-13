@@ -28,6 +28,12 @@ describe Causality::QueueConnector::Starling do
         @instance.set( :queue, :value )
       end
 
+      it "should mark the connection as up" do
+        @instance.set( :queue, :value )
+        @instance.status.should == :up
+        @instance.down_since.should == nil
+      end
+
     end
 
     context "the connection went away" do
@@ -57,6 +63,12 @@ describe Causality::QueueConnector::Starling do
         it "should raise an exception" do
           lambda { @instance.set :queue, :value }.should raise_error  
         end
+
+        it "should mark the queue as down" do
+          lambda { @instance.set :queue, :value }.should raise_error  
+          @instance.status.should == :down
+          @instance.down_since.should_not be_nil
+        end
       end
 
       context "and if reconnection succeeds" do
@@ -68,6 +80,12 @@ describe Causality::QueueConnector::Starling do
 
         it "should store the value in the queue" do
           @instance.set :queue, :value
+        end
+
+        it "should mark the queue as up" do
+          @instance.set( :queue, :value )
+          @instance.status.should == :up
+          @instance.down_since.should == nil
         end
       end
     end
@@ -136,6 +154,12 @@ describe Causality::QueueConnector::Starling do
         it "should raise an exception" do
           lambda { @instance.get :queue }.should raise_error  
         end
+
+        it "should mark the queue as down" do
+          lambda { @instance.get :queue }.should raise_error  
+          @instance.status.should == :down
+          @instance.down_since.should_not be_nil
+        end
       end
 
       context "and if reconnection succeeds" do
@@ -148,6 +172,12 @@ describe Causality::QueueConnector::Starling do
         it "should get the value in the queue" do
           @instance.get( :queue ).should == :value
         end
+
+        it "should mark the queue as up" do
+          @instance.get( :queue )
+          @instance.status.should == :up
+          @instance.down_since.should == nil
+        end
       end
     end
 
@@ -159,6 +189,12 @@ describe Causality::QueueConnector::Starling do
       it "should get the value in the queue" do
         @starling.should_receive( :get ).once.with( :queue ).and_return( :value )
         @instance.get( :queue ).should == :value
+      end
+
+      it "should mark the connection as up" do
+        @instance.get( :queue )
+        @instance.status.should == :up
+        @instance.down_since.should == nil
       end
 
     end
