@@ -12,6 +12,18 @@ module Causality
         @connection_data = { :host => options[:host],
                              :port => options[:port] }
       end
+
+      def connect
+        raise "I'm part of an abstract class. Override me!"
+      end
+
+      def set
+        raise "I'm part of an abstract class. Override me!"
+      end
+
+      def get
+        raise "I'm part of an abstract class. Override me!"
+      end
     end
   end
 end

@@ -57,11 +57,26 @@ describe Causality::QueueConnector::Base do
   end
 
   describe "#connect" do
+    before( :each ) do
+      @method = :connect
+    end
+
+    it_should_behave_like "an abstract method"
   end
 
   describe "#set" do
+    before( :each ) do
+      @method = :set
+    end
+    
+    it_should_behave_like "an abstract method"
   end
 
   describe "#get" do
+    before( :each ) do
+      @method = :get
+    end
+
+    it_should_behave_like "an abstract method"
   end
 end
