@@ -12,7 +12,7 @@ module Causality
       end
 
       def connect
-        @handle = ::Starling.new "some_host:31337" #connection_string
+        @handle = ::Starling.new connection_string
       rescue
         @handle = nil
         raise Causality::QueueUnavailable
