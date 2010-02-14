@@ -5,3 +5,4 @@
   :spool_path: "test_spool"
 :dispatcher:
   :rule_path: "test_rules"
+  :effect_path: "test_effects"

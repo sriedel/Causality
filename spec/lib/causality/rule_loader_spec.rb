@@ -11,7 +11,7 @@ describe Causality::RuleLoader do
   describe ".load_directory" do
     it "should load the rules in each rule file in the given directory" do
       array = Causality::RuleLoader.load_directory( @test_rule_path.to_s )
-      array.size.should == 5
+      array.size.should == 6
     end
 
     it "should return an array of Causality::Rule objects" do

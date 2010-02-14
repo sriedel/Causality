@@ -1,4 +1,4 @@
-class TestEffect < Causality::Effect::Base
+class Sublimation < Causality::Effect::Base
   def self.manifest( cause )
     true
   end

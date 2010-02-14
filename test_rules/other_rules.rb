@@ -1,7 +1,12 @@
 [
   { :name => "uninterested",
     :activating_causes => [ ],
-    :resulting_effects => [ :rapture, :sublimation ],
+    :resulting_effects => [ :Rapture, :Sublimation ],
+    :rule              => Proc.new { |cause| true }
+  },
+  { :name => "duplicate rule",
+    :activating_causes => [ :gravity_wave ],
+    :resulting_effects => [ :Rapture ],
     :rule              => Proc.new { |cause| true }
   },
   { :name => "lethargic",
@@ -11,7 +16,7 @@
   },
   { :name => "exceptional",
     :activating_causes => [ :gravity_wave ],
-    :resulting_effects => [ :rational_thought ],
+    :resulting_effects => [ :RationalThought ],
     :rule              => Proc.new { |cause| raise }
   },
 ]
