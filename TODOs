@@ -1,0 +1,3 @@
+- consistently rename "event" into "cause"
+- Move Effect classes into Causality::Effects namespace
+- rename Causality::Rule.evaluate to Causality::Rule.interested_in?
