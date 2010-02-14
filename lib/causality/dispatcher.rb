@@ -20,15 +20,9 @@ module Causality
       event = @queue.get( :causality_events )
       return false unless event
 
-      interested_effects = []
-      subscriptions[ event.name ].each do |subscriber|
-        interested_effects |= subscriber.resulting_effects if subscriber.evaluate( event )
-      end
-
-      interested_effects.each do |effect|
+      interested_subscribers_for_event( event ).each do |effect|
         Kernel.const_get( effect ).manifest( event )
       end
-
     end
 
     def process_loop
@@ -50,6 +44,14 @@ module Causality
           @subscriptions[cause] << filter
         end
       end
+    end
+
+    private
+    def interested_subscribers_for_event( event )
+      subscriptions[ event.name ].select{ |subscriber| subscriber.evaluate event }.
+                                  collect{ |subscriber| subscriber.resulting_effects }.
+                                  flatten.
+                                  uniq
     end
 
   end
