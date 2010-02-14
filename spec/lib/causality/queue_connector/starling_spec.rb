@@ -50,7 +50,7 @@ describe Causality::QueueConnector::Starling do
 
       it "should try to set the data again" do
         @calls = 0
-        @starling.stub!( :set ).and_return { @calls += 1 ; raise }
+        @starling.stub!( :set ).and_return { @calls += 1 ; raise MemCache::MemCacheError }
         lambda { @instance.set :queue, :value }.should raise_error
         @calls.should == 2
       end
@@ -75,7 +75,7 @@ describe Causality::QueueConnector::Starling do
         before( :each ) do
           @calls = 0
           @starling.stub!( :set ).
-                    and_return{ @calls += 1 ; if @calls == 1 then raise else true end }
+                    and_return{ @calls += 1 ; if @calls == 1 then raise MemCache::MemCacheError else true end }
         end
 
         it "should store the value in the queue" do
@@ -141,7 +141,7 @@ describe Causality::QueueConnector::Starling do
 
       it "should try to get the data again" do
         @calls = 0
-        @starling.stub!( :get ).and_return { @calls += 1 ; raise }
+        @starling.stub!( :get ).and_return { @calls += 1 ; raise MemCache::MemCacheError }
         lambda { @instance.get :queue }.should raise_error
         @calls.should == 2
       end
@@ -166,7 +166,7 @@ describe Causality::QueueConnector::Starling do
         before( :each ) do
           @calls = 0
           @starling.stub!( :get ).
-                    and_return{ @calls += 1 ; if @calls == 1 then raise else :value end }
+                    and_return{ @calls += 1 ; if @calls == 1 then raise MemCache::MemCacheError else :value end }
         end
 
         it "should get the value in the queue" do
