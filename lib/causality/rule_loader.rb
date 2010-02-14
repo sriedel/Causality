@@ -3,8 +3,7 @@ module Causality
     RULE_FILE_GLOB = "*_rules.rb"
 
     def self.load_directory( directory )
-      rule_files_in_directory( directory ).select{ |f| File.file? f }.  
-                                           collect { |file| load_file file }.
+      rule_files_in_directory( directory ).collect { |file| load_file file }.
                                            flatten.
                                            uniq
     end
@@ -15,7 +14,7 @@ module Causality
 
     private
     def self.rule_files_in_directory( path )
-      Dir.glob( File.join( path, RULE_FILE_GLOB ) )
+      Dir.glob( File.join( path, RULE_FILE_GLOB ) ).select{ |f| File.file? f }
     end
 
     def self.extract_rules_array( file )
