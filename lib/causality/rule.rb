@@ -12,6 +12,13 @@ module Causality
       @rule = rule
     end
 
+    def self.from_hash( options )
+      new options[:name], 
+          options[:activating_causes], 
+          options[:resulting_effects], 
+          &options[:rule]
+    end
+
     def evaluate( event )
       @rule.call( event ) rescue false
     end

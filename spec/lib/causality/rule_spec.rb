@@ -45,6 +45,32 @@ describe Causality::Rule do
     end
   end
 
+  describe ".from_hash" do
+    before( :each ) do
+      @hash = { :name => @name,
+                :activating_causes => @activating_causes,
+                :resulting_effects => @resulting_effects,
+                :rule => @always_rule }
+      @instance = Causality::Rule.from_hash( @hash )
+    end
+
+    it "should set the name" do
+      @instance.name.should == @name
+    end
+
+    it "should set the rule proc from the block" do
+      @instance.rule.should == @always_rule
+    end
+
+    it "should set the activating_causes" do
+      @instance.activating_causes.should == @activating_causes
+    end
+
+    it "should set the resulting_effects" do
+      @instance.resulting_effects.should == @resulting_effects
+    end
+  end
+
   describe "#evaluate" do
     before( :each ) do
       @event = :some_event
