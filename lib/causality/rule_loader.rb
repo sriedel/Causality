@@ -3,18 +3,14 @@ module Causality
     RULE_FILE_GLOB = "*_rules.rb"
 
     def self.load_directory( directory )
-      rules = []
-      
-      rule_files_in_directory( directory ).each do |rule_file|
-        next unless File.file? rule_file
-        begin
-          files_rule_array = extract_rules_array( rule_file )
-          rules += create_rules( files_rule_array )
-        rescue
-        end
-        
-      end
-      rules 
+      rule_files_in_directory( directory ).select{ |f| File.file? f }.  
+                                           collect { |file| load_file file }.
+                                           flatten.
+                                           uniq
+    end
+
+    def self.load_file( file )
+      create_rules( extract_rules_array( file ) ) rescue []
     end
 
     private
@@ -27,14 +23,11 @@ module Causality
     end
 
     def self.create_rules( array )
-      rules = []
-      array.each do |file_rule|
-        begin
-          rules << Causality::Rule.from_hash( file_rule )
-        rescue
-        end
-      end
-      rules
+      array.collect { |file_rule| create_rule( file_rule ) }.compact
+    end
+
+    def self.create_rule( hash )
+      Causality::Rule.from_hash( hash ) rescue nil
     end
 
   end
