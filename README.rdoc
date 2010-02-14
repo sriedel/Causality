@@ -1,0 +1,8 @@
+= Causality - An application eventing system 
+
+Think of this as an application-level observer 
+
+Currently in initial development, check back soon for a working version.
+
+= Contact
+sr@gimp.org
