@@ -3,3 +3,5 @@
   :port: 22122
 :spool:
   :spool_path: "test_spool"
+:dispatcher:
+  :rule_path: "test_rules"
